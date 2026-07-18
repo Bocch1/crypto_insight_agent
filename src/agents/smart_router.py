@@ -4,7 +4,7 @@
 """
 import json
 from typing import Dict, Any, List
-from langchain_deepseek import ChatDeepSeek
+from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage, SystemMessage
 from loguru import logger
 from config.settings import settings
@@ -19,7 +19,7 @@ class SmartRouter:
             self.llm = None
             return
             
-        self.llm = ChatDeepSeek(
+        self.llm = ChatOpenAI(
             model="deepseek-chat",
             api_key=settings.DEEPSEEK_API_KEY,
             base_url=settings.DEEPSEEK_BASE_URL,

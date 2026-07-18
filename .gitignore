@@ -1,15 +1,35 @@
 # Python
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+*.so
+.Python
 venv/
+env/
+.venv/
+
+# Environment variables
 .env
-*.log
-*.db
+.env.local
+.env.*.local
 
 # IDE
 .vscode/
 .idea/
+*.swp
+*.swo
+
+# Logs
+logs/
+*.log
+
+# Streamlit
+.streamlit/secrets.toml
 
 # OS
-Thumbs.db
 .DS_Store
+Thumbs.db
+
+# Project specific
+*.db
+*.sqlite

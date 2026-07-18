@@ -154,7 +154,7 @@ class AgentState(BaseModel):
     # 分析结果
     report: Optional[AnalysisReport] = None
     
-    # 控制流
+    # 控制
     error_count: int = Field(default=0, description="错误计数")
     status: str = Field(default="initialized", description="当前状态")
     

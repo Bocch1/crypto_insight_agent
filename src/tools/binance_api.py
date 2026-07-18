@@ -1,3 +1,4 @@
+
 """
 币安API封装
 提供市场数据查询功能
@@ -82,7 +83,7 @@ class BinanceAPI:
             response.raise_for_status()
             
             data = response.json()
-            logger.debug(f"获取{symbol}订单簿数据: 买一={data['bids'][0][0]}, 卖一={data['asks'][0][0]}")
+            logger.debug(f"获取{symbol}订单簿数据 买一={data['bids'][0][0]}, 卖一={data['asks'][0][0]}")
             return data
             
         except requests.exceptions.RequestException as e:
@@ -131,7 +132,7 @@ class BinanceAPI:
     
     def calculate_volatility(self, symbol: str = "ETHUSDT") -> Optional[float]:
         """
-        计算波动率 (基于24小时高低价差)
+        计算波动率(基于24小时高低价差)
         
         Args:
             symbol: 交易对

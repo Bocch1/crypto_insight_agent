@@ -258,11 +258,8 @@ with st.sidebar:
     st.markdown("---")
     
     # ===== API 设置（可折叠） =====
-        # ===== API 设置（可折叠） =====
-    # 没配 DeepSeek 时默认展开
     deepseek_configured = bool(os.getenv("DEEPSEEK_API_KEY", "")) and "your_" not in os.getenv("DEEPSEEK_API_KEY", "")
     with st.expander("⚙️ API 设置", expanded=not deepseek_configured):
-        # 读取当前环境变量
         current_deepseek = os.getenv("DEEPSEEK_API_KEY", "")
         current_etherscan = os.getenv("ETHERSCAN_API_KEY", "")
         current_binance_key = os.getenv("BINANCE_API_KEY", "")
@@ -274,11 +271,11 @@ with st.sidebar:
         st.markdown("**🔴 必填**")
         
         deepseek_key = st.text_input(
-            "🔑 DeepSeek API Key *这个好像不得不填欸*",
+            "🔑 DeepSeek API Key *这个好像不得不填哦",
             value=current_deepseek if current_deepseek and "your_" not in current_deepseek else "",
             type="password",
             placeholder="sk-xxx（必填！萝卜子引擎依赖此 Key）",
-            help="需要从 platform.deepseek.com 获取哦。不填的话萝卜子会没电的哦。"
+            help="需要从 platform.deepseek.com 获取哦。不填的话萝卜子会没电的哦"
         )
         
         st.markdown("---")
@@ -289,7 +286,7 @@ with st.sidebar:
             value=current_etherscan if current_etherscan and "your_" not in current_etherscan else "",
             type="password",
             placeholder="免费注册获取，链上数据需要",
-            help="可以从 etherscan.io 免费注册（链上数据）哦"
+            help="可以在 etherscan.io 免费注册（链上数据）"
         )
         
         st.markdown("---")
@@ -300,7 +297,7 @@ with st.sidebar:
             value=current_binance_key if current_binance_key and "your_" not in current_binance_key else "",
             type="password",
             placeholder="可选，公开接口无需填写",
-            help="可以从 binance.com 获取（更高请求频率）哦"
+            help="可以在 binance.com 获取（更高请求频率）"
         )
         
         binance_secret = st.text_input(
@@ -308,7 +305,7 @@ with st.sidebar:
             value=current_binance_secret if current_binance_secret and "your_" not in current_binance_secret else "",
             type="password",
             placeholder="可选",
-            help="可以配合 API Key 使用哦"
+            help="可以配合 API Key 使用"
         )
         
         langsmith_key = st.text_input(
@@ -316,7 +313,7 @@ with st.sidebar:
             value=current_langsmith if current_langsmith and "your_" not in current_langsmith else "",
             type="password",
             placeholder="可选，调试追踪用",
-            help="可以从 smith.langchain.com 获取哦"
+            help="可以从 smith.langchain.com 获取"
         )
         
         langsmith_project = st.text_input(
@@ -331,7 +328,7 @@ with st.sidebar:
             value=current_news if current_news and "your_" not in current_news else "",
             type="password",
             placeholder="可选，新闻数据",
-            help="可以从 newsapi.org 获取哦"
+            help="可以从 newsapi.org 获取"
         )
         
         if st.button("💾 保存所有设置", use_container_width=True):
@@ -349,9 +346,8 @@ with st.sidebar:
             if news_key:
                 os.environ["NEWS_API_KEY"] = news_key
             st.cache_resource.clear()
-            st.success("✅ 设置已经保存喽")
+            st.success("✅ 设置已经保存啦")
             st.rerun()
-        
         
         st.caption("💡 设置仅保存在当前会话哦，可复制到 .env 文件持久化哦")
     
@@ -418,18 +414,18 @@ st.markdown("---")
 
 # 示例提示
 example_queries = [
-    "BTC最近怎么样？能定投吗？",
-    "ETH有什么异常吗？",
-    "市场是不是又慌了？",
+    "BTC最近怎么样？能定投吗",
+    "ETH有什么异常吗",
+    "市场是不是又慌了",
     "帮我看看SOL~",
-    "ETH和BTC哪个更香？"
+    "ETH和BTC哪个更香"
 ]
 
 # 主输入框
 st.markdown("### 💬 随便问，高性能萝卜子随时待命~")
 user_query = st.text_input(
     "question_input",
-    placeholder="例如：BTC最近怎么样？能定投吗？",
+    placeholder="例如：BTC最近怎么样？能定投吗",
     label_visibility="collapsed"
 )
 
@@ -515,11 +511,11 @@ if st.session_state.quick_action:
     if action == "sentiment":
         st.session_state.user_query = "市场情绪怎么样？"
     elif action == "eth":
-        st.session_state.user_query = "ETH有什么异常吗？"
+        st.session_state.user_query = "ETH有什么异常吗"
     elif action == "btc":
-        st.session_state.user_query = "BTC有什么异常吗？"
+        st.session_state.user_query = "BTC有什么异常吗"
     elif action == "gas":
-        st.session_state.user_query = "Gas价格多少？"
+        st.session_state.user_query = "Gas价格多少"
     
     st.session_state.run_analysis = True
     st.session_state.quick_action = None
@@ -532,7 +528,6 @@ if st.session_state.run_analysis:
     
     query = st.session_state.user_query
     
-    # 用智能路由分析意图（先提取币种用于显示）
     from src.agents.smart_router import SmartRouter
     router = SmartRouter()
     intent = router.analyze_intent(query)
@@ -546,8 +541,8 @@ if st.session_state.run_analysis:
         config = {"configurable": {"thread_id": f"web-{datetime.now().timestamp()}"}}
         
         with status_container:
-            st.write(f"🎯 识别币种...中...: {symbol}")
-            st.write(f"🧠 分析维度...中...: {', '.join(intent.get('actions', ['综合分析']))}")
+            st.write(f"🎯 识别币种... : {symbol}")
+            st.write(f"🧠 分析维度... : {', '.join(intent.get('actions', ['综合分析']))}")
             st.write("⏳ 正在采集数据，稍等一会哦...")
             
             result = workflow.invoke(state, config)
@@ -557,7 +552,7 @@ if st.session_state.run_analysis:
             else:
                 final_state = result
             
-            st.write("✅ 分析完成！")
+            st.write("✅ 分析完成啦")
         
         # ========== 显示结果 ==========
         if final_state.report:
@@ -565,7 +560,6 @@ if st.session_state.run_analysis:
             
             st.markdown("---")
             
-            # 顶部概览
             overview_col1, overview_col2, overview_col3, overview_col4 = st.columns(4)
             
             with overview_col1:
@@ -602,11 +596,9 @@ if st.session_state.run_analysis:
             
             st.markdown("---")
             
-            # 摘要
-            st.markdown("### 📝 萝卜子 总结")
+            st.markdown("### 📝 萝卜子总结")
             st.markdown(f'<div class="card">{report.summary}</div>', unsafe_allow_html=True)
             
-            # 详细分析
             tab1, tab2, tab3, tab4 = st.tabs(["📈 市场情报", "⛓️ 链上数据", "🎭 情绪分析", "🚨 异常检测"])
             
             with tab1:
@@ -630,7 +622,6 @@ if st.session_state.run_analysis:
                 else:
                     st.success("✅ 一切正常，没有发现异常~")
             
-            # 底部操作
             st.markdown("---")
             col1, col2, col3 = st.columns([1, 1, 4])
             with col1:
@@ -668,11 +659,9 @@ Crypto Insight 分析报告
         status_container.update(label="❌ 分析失败", state="error")
 
 else:
-    # 检查 API 配置状态
     deepseek_ok = bool(os.getenv("DEEPSEEK_API_KEY", "")) and "your_" not in os.getenv("DEEPSEEK_API_KEY", "")
     etherscan_ok = bool(os.getenv("ETHERSCAN_API_KEY", "")) and "your_" not in os.getenv("ETHERSCAN_API_KEY", "")
     
-    # 欢迎界面
     st.markdown("---")
     st.markdown("""
     <div style="background:#161b22; border:1px solid #30363d; border-radius:16px; padding:2rem; margin-top:1rem;">
@@ -684,8 +673,8 @@ else:
         <ul style="color:#e6edf3; font-size:1rem; line-height:2.2rem; list-style:none; padding-left:0.5rem;">
             <li>📊 <b>实时行情</b> — 价格涨跌波动，全部✨闪闪发光✨地呈现！</li>
             <li>⛓️ <b>链上监控</b> — 大额转账资金流向，逃不过萝卜子的眼睛！</li>
-            <li>🎭 <b>情绪感知</b> — 恐惧贪婪指数，今天市场心情如--何呢？</li>
-            <li>🌟 <b>萝卜子研判</b> — 智能风险评估，交给萝卜子我吧！💪 <span style="font-size:0.85rem; color:#8b949e;">（不是姐姐但也很靠谱哦！）</span></li>
+            <li>🎭 <b>情绪感知</b> — 恐惧贪婪指数，今天市场心情如何呢？</li>
+            <li>🌟 <b>萝卜子研判</b> — 智能风险评估，交给萝卜子我吧！💪<span style="font-size:0.85rem; color:#8b949e;">（不是姐姐但也很靠谱哦！）</span></li>
         </ul>
         <p style="color:#8b949e; font-size:0.95rem; margin-top:1.5rem;">
             👆 直接在上方输入框提问，萝卜子会自动识别币种和分析维度<br>
@@ -694,7 +683,6 @@ else:
     </div>
     """, unsafe_allow_html=True)
     
-    # API 未配置提示
     if not deepseek_ok:
         st.warning("⚠️ 未配置 DeepSeek API Key，请在左侧「⚙️ API 设置」中填入，否则 AI 分析功能不可用")
     if not etherscan_ok:

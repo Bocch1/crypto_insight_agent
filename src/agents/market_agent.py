@@ -26,7 +26,7 @@ class MarketAgent(BaseAgent):
         Returns:
             更新后的状态
         """
-        logger.info(f"市场Agent开始分析: {state.symbol}")
+        logger.info(f"市场Agent开始分析 {state.symbol}")
         
         try:
             # 获取市场数据

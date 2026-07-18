@@ -5,7 +5,7 @@ from typing import Dict, Any, List
 from loguru import logger
 from langgraph.graph import StateGraph, END
 from langgraph.checkpoint.memory import MemorySaver
-from langchain.schema import HumanMessage  # 添加这行
+from langchain_core.messages import HumanMessage
 
 from src.models.schemas import AgentState, MarketData, OnchainData, SentimentData, AnalysisReport, AnomalyInfo
 from src.agents.market_agent import MarketAgent
@@ -126,7 +126,6 @@ def smart_report_node(state: SmartAgentState) -> SmartAgentState:
     try:
         if deepseek.llm:
             prompt = f"""根据以下数据回答用户问题。直接简洁回答，不需要格式化。
-
 {context}
 
 请回答用户的问题: {state.specific_question}"""

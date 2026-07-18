@@ -1,49 +1,43 @@
 """
-日志配置模块
-使用 loguru 实现结构化日志
+日志工具 - 配置 loguru
 """
 import sys
 from pathlib import Path
 from loguru import logger
 
 
-def setup_logger(log_level: str = "INFO", log_file: str = "logs/app.log"):
+def setup_logger(level: str = "INFO", log_dir: str = "logs"):
     """
     配置日志系统
     
     Args:
-        log_level: 日志级别 (DEBUG, INFO, WARNING, ERROR)
-        log_file: 日志文件路径
+        level: 日志级别 (DEBUG/INFO/WARNING/ERROR)
+        log_dir: 日志目录
     """
-    # 移除默认handler
+    # 移除默认的 handler
     logger.remove()
     
     # 创建日志目录
-    log_path = Path(log_file)
-    log_path.parent.mkdir(parents=True, exist_ok=True)
+    log_path = Path(log_dir)
+    log_path.mkdir(exist_ok=True)
     
-    # 控制台输出 - 彩色格式
+    # 控制台输出
     logger.add(
         sys.stdout,
-        level=log_level,
-        format=(
-            "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | "
-            "<level>{level: <8}</level> | "
-            "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> | "
-            "<level>{message}</level>"
-        ),
+        format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>",
+        level=level,
         colorize=True
     )
     
-    # 文件输出 - 详细格式
+    # 文件输出 (按日期轮转)
     logger.add(
-        log_file,
-        level="DEBUG",
-        format="{time:YYYY-MM-DD HH:mm:ss.SSS} | {level: <8} | {name}:{function}:{line} | {message} | {extra}",
-        rotation="10 MB",  # 10MB自动轮转
-        retention="7 days",  # 保留7天
-        compression="zip",  # 压缩旧日志
+        log_path / "crypto_{time:YYYY-MM-DD}.log",
+        format="{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {name}:{function}:{line} - {message}",
+        level=level,
+        rotation="1 day",
+        retention="30 days",
         encoding="utf-8"
     )
     
+    logger.info(f"日志系统初始化完成，日志级别: {level}")
     return logger

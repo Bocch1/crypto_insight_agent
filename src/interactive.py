@@ -44,18 +44,18 @@ class CryptoInsightCLI:
         self.clear_screen()
         print("""
 ╔══════════════════════════════════════════════════════════╗
-║                                                          ║
-║   🚀  Crypto Insight Agent  v1.0                        ║
-║   基于 LangGraph + DeepSeek 的加密货币情报分析系统        ║
-║                                                          ║
-║   数据源: 币安 | Etherscan | 恐惧贪婪指数                 ║
-║   AI引擎: DeepSeek                                      ║
-║                                                          ║
+║                                                         ║
+║  🚀  Crypto Insight Agent  v1.0                        ║
+║  基于 LangGraph + DeepSeek 的加密货币情报分析系统       ║
+║                                                         ║
+║  数据源: 币安 | Etherscan | 恐惧贪婪指数                 ║
+║  AI引擎: DeepSeek                                      ║
+║                                                         ║
 ╚══════════════════════════════════════════════════════════╝
 """)
         
         # 显示API状态
-        print("📡 API 状态检查:")
+        print("📡 API 状态检查")
         checks = [
             ("DeepSeek", settings.DEEPSEEK_API_KEY),
             ("币安", True),  # 公开API
@@ -73,14 +73,13 @@ class CryptoInsightCLI:
         """打印帮助信息"""
         print("""
 📖 命令列表:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🔍 分析命令:
-   analyze <币种>      - 全面分析指定币种 (如: analyze ETH)
-   price <币种>         - 快速查询价格 (如: price BTC)
-   onchain <币种>       - 查看链上活动 (如: onchain ETH)
+   analyze <币种>      - 全面分析指定币种 (例: analyze ETH)
+   price <币种>         - 快速查询价格 (例: price BTC)
+   onchain <币种>       - 查看链上活动 (例: onchain ETH)
    sentiment            - 查看市场情绪
-   compare <币种1> <币种2> - 对比两个币种 (如: compare ETH BTC)
+   compare <币种1> <币种2> - 对比两个币种 (例: compare ETH BTC)
 
 📊 快捷命令:
    eth                  - 快速分析ETH
@@ -116,7 +115,7 @@ class CryptoInsightCLI:
             risk = record.get('risk_score', 'N/A')
             print(f"  {i}. [{timestamp}] {query}")
             if symbol:
-                print(f"     → {symbol} 风险评分: {risk}")
+                print(f"     🪙 {symbol} 风险评分: {risk}")
     
     def extract_symbol(self, text: str) -> Optional[str]:
         """从文本中提取币种"""
@@ -124,7 +123,7 @@ class CryptoInsightCLI:
         symbols_map = {
             "ETH": ["ETH", "ETHEREUM", "以太坊", "以太"],
             "BTC": ["BTC", "BITCOIN", "比特币", "大饼"],
-            "BNB": ["BNB", "BINANCE", "币安币"],
+            "BNB": ["BNB", "BINANCE", "币安"],
             "SOL": ["SOL", "SOLANA", "索拉纳"],
             "XRP": ["XRP", "RIPPLE", "瑞波"],
             "DOGE": ["DOGE", "DOGECOIN", "狗狗币"],
@@ -293,7 +292,7 @@ class CryptoInsightCLI:
                 
                 # 退出命令
                 if cmd_lower in ['quit', 'exit', 'q']:
-                    print("\n👋 再见！")
+                    print("\n👋 再见啦~")
                     break
                 
                 # 帮助
@@ -347,7 +346,7 @@ class CryptoInsightCLI:
                     self.run_analysis(user_input, symbol)
                 
             except KeyboardInterrupt:
-                print("\n\n👋 再见！")
+                print("\n\n👋 再见啦~")
                 break
             except Exception as e:
                 self.display.print_error(f"错误: {e}")

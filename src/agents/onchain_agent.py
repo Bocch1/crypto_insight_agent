@@ -37,7 +37,7 @@ class OnchainAgent(BaseAgent):
         Returns:
             更新后的状态
         """
-        logger.info(f"链上Agent开始分析: {state.symbol}")
+        logger.info(f"链上Agent开始分析 {state.symbol}")
         
         try:
             # 获取链上数据
@@ -145,7 +145,7 @@ class OnchainAgent(BaseAgent):
             onchain_data.exchange_outflow = total_outflow
             
             logger.info(
-                f"链上数据分析: {len(large_transactions)}笔大额交易, "
+                f"链上数据分析: {len(large_transactions)}笔大额交易 "
                 f"流入{total_inflow:.2f}ETH, 流出{total_outflow:.2f}ETH"
             )
             

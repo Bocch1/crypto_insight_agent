@@ -1,13 +1,10 @@
 """
-LangGraph工作流定义
-编排多Agent协作流程
+LangGraph工作流定义 - 编排多Agent协作流程
 """
 from typing import Dict, Any
 from loguru import logger
 from langgraph.graph import StateGraph, END
-# 修改这行导入
-from langgraph.checkpoint.memory import MemorySaver  # 新版本路径
-
+from langgraph.checkpoint.memory import MemorySaver
 from src.models.schemas import AgentState, AnalysisReport
 from src.agents.market_agent import MarketAgent
 from src.agents.onchain_agent import OnchainAgent
@@ -42,7 +39,7 @@ def planner_node(state: AgentState) -> AgentState:
     crypto_symbols = {
         "BTC": ["BTC", "BITCOIN", "比特币", "大饼"],
         "ETH": ["ETH", "ETHEREUM", "以太坊", "以太"],
-        "BNB": ["BNB", "BINANCE COIN", "币安币"],
+        "BNB": ["BNB", "BINANCE COIN", "币安"],
         "SOL": ["SOL", "SOLANA"],
         "XRP": ["XRP", "RIPPLE", "瑞波"],
         "DOGE": ["DOGE", "DOGECOIN", "狗狗币"],
@@ -305,7 +302,7 @@ def _generate_summary(state: AgentState, risk_score: float) -> str:
         anomaly_count = len(state.report.anomalies)
     
     summary = (
-        f"{symbol}当前{risk_level}（评分: {risk_score:.0f}/100）。"
+        f"{symbol}当前{risk_level}（评分 {risk_score:.0f}/100）。"
         f"检测到{anomaly_count}个异常信号。{advice}。"
         f"数据来源：币安市场数据、Etherscan链上数据、恐惧贪婪指数。"
     )
@@ -326,12 +323,12 @@ def should_continue(state: AgentState) -> str:
     # 如果错误太多，提前结束
     if state.error_count > 3:
         logger.warning(f"错误次数过多({state.error_count})，提前结束")
-        return "generate_report"  # 改名
+        return "generate_report"
     
     # 检查是否所有数据都已采集完成
     if state.market_data and state.onchain_data and state.sentiment_data:
         logger.info("所有数据采集完成，进入报告生成阶段")
-        return "generate_report"  # 改名
+        return "generate_report"
     
     # 按照计划继续执行
     if state.current_step == "planning_complete":
@@ -341,7 +338,7 @@ def should_continue(state: AgentState) -> str:
     elif state.current_step == "onchain_data_collected":
         return "sentiment"
     elif state.current_step == "sentiment_data_collected":
-        return "generate_report"  # 改名
+        return "generate_report"
     
     # 默认结束
     return END
@@ -355,19 +352,12 @@ def create_workflow():
         编译后的工作流
     """
     
-    
     # 激活LangSmith追踪
     if settings.LANGCHAIN_API_KEY:
         os.environ["LANGCHAIN_TRACING_V2"] = "true"
         os.environ["LANGCHAIN_API_KEY"] = settings.LANGCHAIN_API_KEY
         os.environ["LANGCHAIN_PROJECT"] = settings.LANGCHAIN_PROJECT
         logger.info("LangSmith追踪已启用")
-    
-    logger.info("创建LangGraph工作流")
-    
-    # ... 其余代码保持不变
-    
-    
     
     logger.info("创建LangGraph工作流")
     
@@ -379,7 +369,7 @@ def create_workflow():
     workflow.add_node("market", market_node)
     workflow.add_node("onchain", onchain_node)
     workflow.add_node("sentiment", sentiment_node)
-    workflow.add_node("generate_report", report_node)  # 改名：report -> generate_report
+    workflow.add_node("generate_report", report_node)
     
     # 设置入口
     workflow.set_entry_point("planner")
@@ -392,18 +382,18 @@ def create_workflow():
             "market": "market",
             "onchain": "onchain",
             "sentiment": "sentiment",
-            "generate_report": "generate_report",  # 改名
+            "generate_report": "generate_report",
             END: END
         }
     )
     
-    # 各数据采集节点完成后进入下一个
+    # 各数据采集节点完成后进入下一步
     workflow.add_edge("market", "onchain")
     workflow.add_edge("onchain", "sentiment")
-    workflow.add_edge("sentiment", "generate_report")  # 改名
+    workflow.add_edge("sentiment", "generate_report")
     
     # 报告生成后结束
-    workflow.add_edge("generate_report", END)  # 改名
+    workflow.add_edge("generate_report", END)
     
     # 编译（带记忆功能）
     memory = MemorySaver()

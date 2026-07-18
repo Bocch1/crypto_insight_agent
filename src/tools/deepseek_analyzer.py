@@ -1,11 +1,10 @@
 """
-DeepSeek AI 分析器
-用AI替代规则引擎进行智能分析和报告生成
+DeepSeek AI 分析器 - 用AI替代规则引擎进行智能分析和报告生成
 """
 from typing import Optional, Dict, Any
-from langchain_deepseek import ChatDeepSeek
-from langchain.prompts import ChatPromptTemplate
-from langchain.schema import SystemMessage, HumanMessage
+from langchain_openai import ChatOpenAI  # 改用 ChatOpenAI
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.messages import SystemMessage, HumanMessage
 from loguru import logger
 from config.settings import settings
 
@@ -19,14 +18,16 @@ class DeepSeekAnalyzer:
             self.llm = None
             return
             
-        self.llm = ChatDeepSeek(
+        self.llm = ChatOpenAI(
             model="deepseek-chat",
             api_key=settings.DEEPSEEK_API_KEY,
-            base_url=settings.DEEPSEEK_BASE_URL,
-            temperature=0.3,  # 降低温度以获得更稳定的分析
+            base_url=settings.DEEPSEEK_BASE_URL or "https://api.deepseek.com/v1",
+            temperature=0.3,
             max_tokens=2000
         )
         logger.info("DeepSeek 分析器初始化完成")
+    
+    # ... 其余方法保持不变
     
     def analyze_market_anomalies(self, market_data: Dict[str, Any]) -> str:
         """
@@ -43,7 +44,7 @@ class DeepSeekAnalyzer:
         
         prompt = f"""你是一个专业的加密货币分析师。请分析以下市场数据，识别异常信号并给出专业见解。
 
-市场数据：
+市场数据:
 - 交易对: {market_data.get('symbol')}
 - 当前价格: ${market_data.get('current_price', 0):.2f}
 - 24小时涨跌: {market_data.get('price_change_24h', 0):.2f}%
@@ -83,7 +84,7 @@ class DeepSeekAnalyzer:
         
         prompt = f"""你是一个区块链数据分析专家。请分析以下链上数据，识别潜在风险。
 
-链上数据：
+链上数据:
 - 网络: {onchain_data.get('network', 'ethereum')}
 - 大额交易笔数: {len(onchain_data.get('large_transactions', []))}
 - 交易所净流入: {onchain_data.get('exchange_inflow', 0):.2f} ETH
@@ -121,10 +122,10 @@ class DeepSeekAnalyzer:
         
         prompt = f"""你是一个市场心理学专家。请分析当前加密货币市场情绪。
 
-情绪数据：
+情绪数据:
 - 恐惧贪婪指数: {sentiment_data.get('fear_greed_index', 'N/A')} 
 - 情绪标签: {sentiment_data.get('fear_greed_label', 'N/A')}
-- 7天情绪变化: {sentiment_data.get('social_volume_change', 0):.1f}点
+- 7天情绪变化: {sentiment_data.get('social_volume_change', 0):.1f}%
 
 请分析：
 1. 当前市场情绪处于什么阶段？
@@ -160,7 +161,6 @@ class DeepSeekAnalyzer:
         if anomalies:
             anomaly_items = []
             for a in anomalies:
-                # 修复：兼容字典和对象两种格式
                 if isinstance(a, dict):
                     severity = a.get('severity', 'low')
                     description = a.get('description', '未知异常')
@@ -175,34 +175,33 @@ class DeepSeekAnalyzer:
         
         prompt = f"""你是一个资深加密货币投资顾问。请基于以下多维数据生成一份专业的投资分析报告。
 
-    分析币种: {symbol}
+分析币种: {symbol}
 
-    【市场数据分析】
-    {market_analysis}
+【市场数据分析】
+{market_analysis}
 
-    【链上数据分析】
-    {onchain_analysis}
+【链上数据分析】
+{onchain_analysis}
 
-    【市场情绪分析】
-    {sentiment_analysis}
+【市场情绪分析】
+{sentiment_analysis}
 
-    【检测到的异常信号】
-    {anomaly_text}
+【检测到的异常信号】
+{anomaly_text}
 
-    请生成一份简洁专业的报告，包含：
-    1. 综合总结（2-3句话）
-    2. 风险评分（0-100的整数）
-    3. 风险等级（低风险/中等风险/高风险）
-    4. 关键发现
-    5. 操作建议
+请生成一份简洁专业的报告，包含：
+1. 综合总结（2-3句话）
+2. 风险评分（0-100的整数）
+3. 风险等级（低风险/中等风险/高风险）
+4. 关键发现
+5. 操作建议
 
-    请用JSON格式返回，包含字段: summary, risk_score, risk_level, key_findings, advice"""
+请用JSON格式返回，包含字段: summary, risk_score, risk_level, key_findings, advice"""
 
         try:
             messages = [HumanMessage(content=prompt)]
             response = self.llm.invoke(messages)
             
-            # 尝试解析JSON
             import json
             content = response.content
             if "```json" in content:
@@ -218,7 +217,7 @@ class DeepSeekAnalyzer:
             logger.error(f"DeepSeek报告生成失败: {e}")
             return self._rule_based_report(symbol, anomalies)
     
-    # === 规则基础的备用方法 ===
+    # === 规则基础的备用方案 ===
     
     def _rule_based_market_analysis(self, data: Dict[str, Any]) -> str:
         """规则基础的市场分析"""
@@ -227,7 +226,7 @@ class DeepSeekAnalyzer:
         
         analysis = []
         if abs(change) > 10:
-            analysis.append(f"24小时价格剧烈波动{change:.2f}%，属于异常行情")
+            analysis.append(f"24小时价格剧烈波动{change:.2f}%，属于异常行为")
         elif abs(change) > 5:
             analysis.append(f"24小时价格波动{change:.2f}%，波动较大")
         else:
@@ -263,7 +262,7 @@ class DeepSeekAnalyzer:
         if index <= 25:
             return "市场处于极度恐惧状态，可能超卖"
         elif index <= 45:
-            return "市场情绪偏谨慎，投资者避险情绪较重"
+            return "市场情绪偏谨慎，投资者避险情绪较浓"
         elif index <= 55:
             return "市场情绪中性"
         elif index <= 75:
@@ -275,7 +274,6 @@ class DeepSeekAnalyzer:
         """规则基础的报告生成"""
         risk_score = 50
         for a in anomalies:
-            # 修复：兼容字典和对象两种格式
             if isinstance(a, dict):
                 severity = a.get('severity', 'low')
             else:

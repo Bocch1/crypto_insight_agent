@@ -26,7 +26,7 @@ class SentimentAgent(BaseAgent):
         Returns:
             更新后的状态
         """
-        logger.info(f"情绪Agent开始分析: {state.symbol}")
+        logger.info(f"情绪Agent开始分析 {state.symbol}")
         
         try:
             # 获取情绪数据

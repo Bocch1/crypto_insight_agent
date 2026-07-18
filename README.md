@@ -76,28 +76,47 @@ AI 引擎：DeepSeek（智能路由 + 报告生成）
 📁 项目结构
 
 crypto-insight-agent/
-├── streamlit_app.py          # Streamlit Cloud 入口
-├── start.bat / start.sh      # 一键启动脚本
-├── requirements.txt           # Python 依赖
-├── .env.example               # 环境变量模板
+├── streamlit_app.py              # Streamlit Cloud 入口
+├── start.bat / start.sh          # 一键启动脚本
+├── requirements.txt              # Python 依赖
+├── .env.example                  # 环境变量模板
+├── .gitignore                    # Git 忽略配置
+├── assets/
+│   └── icon.png                  # 页面图标
+├── config/
+│   └── settings.py               # 项目配置
 ├── src/
-│   ├── web_app.py             # Web 界面
-│   ├── interactive.py         # CLI 交互界面
-│   ├── agents/                # Agent 模块
-│   │   ├── market_agent.py    # 市场数据 Agent
-│   │   ├── onchain_agent.py   # 链上数据 Agent
-│   │   ├── sentiment_agent.py # 情绪分析 Agent
-│   │   └── smart_router.py    # 智能路由
-│   ├── tools/                 # API 封装
-│   │   ├── binance_api.py     # 币安 API
-│   │   ├── etherscan_api.py   # Etherscan API
-│   │   ├── fear_greed_api.py  # 恐惧贪婪指数
-│   │   └── deepseek_analyzer.py # DeepSeek 分析器
-│   ├── graph/                 # LangGraph 工作流
-│   │   ├── workflow.py        # 基础工作流
-│   │   └── smart_workflow.py  # 智能工作流
-│   └── models/                # 数据模型
-│       └── schemas.py
+│   ├── __init__.py
+│   ├── web_app.py                # Web 界面
+│   ├── interactive.py            # CLI 交互界面
+│   ├── agents/
+│   │   ├── __init__.py
+│   │   ├── base.py               # Agent 基类
+│   │   ├── market_agent.py       # 市场数据 Agent
+│   │   ├── onchain_agent.py      # 链上数据 Agent
+│   │   ├── sentiment_agent.py    # 情绪分析 Agent
+│   │   └── smart_router.py       # 智能路由
+│   ├── tools/
+│   │   ├── __init__.py
+│   │   ├── binance_api.py        # 币安 API
+│   │   ├── etherscan_api.py      # Etherscan API
+│   │   ├── fear_greed_api.py     # 恐惧贪婪指数
+│   │   └── deepseek_analyzer.py  # DeepSeek 分析器
+│   ├── graph/
+│   │   ├── __init__.py
+│   │   ├── workflow.py           # 基础工作流
+│   │   └── smart_workflow.py     # 智能工作流
+│   ├── models/
+│   │   ├── __init__.py
+│   │   └── schemas.py            # 数据模型
+│   └── utils/
+│       ├── __init__.py
+│       ├── logger.py             # 日志工具
+│       ├── retry.py              # 重试装饰器
+│       └── display.py            # 显示工具
+└── tests/
+    ├── __init__.py
+    └── test_basic.py             # 基础测试
 
 
 ❓ 常见问题

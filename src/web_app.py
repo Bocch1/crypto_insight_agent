@@ -16,11 +16,13 @@ load_dotenv()
 
 # 兼容 Streamlit Cloud Secrets
 import os
-if hasattr(st, 'secrets'):
+try:
     for key in ["DEEPSEEK_API_KEY", "ETHERSCAN_API_KEY", "BINANCE_API_KEY", 
                  "BINANCE_API_SECRET", "LANGCHAIN_API_KEY", "LANGCHAIN_PROJECT"]:
         if key in st.secrets:
             os.environ[key] = st.secrets[key]
+except Exception:
+    pass  # 本地没有 secrets 文件，忽略，使用 .env
 
 from src.graph.smart_workflow import create_smart_workflow, SmartAgentState
 from src.tools.fear_greed_api import FearGreedAPI
